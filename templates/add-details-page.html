@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% if data %}
+        <head>
+            <title>Update Details</title>    
+        </head>
+        <body>
+            <div class="container">
+                <fieldset>
+                    <legend>Update Details</legend>
+                    <form method="POST" action="/updateDetails">
+                        <table align="center">
+                            <tr>
+                                <td>Location:</td>
+                                <input type="hidden" value="{{data[0][6]}}" name="location_id">
+                                <td><input type="text" value="{{data[0][2]}}" name="location" placeholder="Location" autofocus required></td>
+                            </tr>
+                            <tr>
+                                <td>Department:</td>
+                                <input type="hidden" value="{{data[0][9]}}" name="department_id">
+                                <td><input type="text" value="{{data[0][3]}}" name="department" placeholder="Department" required></td>
+                            </tr>
+                            <tr>
+                                <td>Category:</td>
+                                <input type="hidden" value="{{data[0][7]}}" name="category_id">
+                                <td><input type="text" name="category" value="{{data[0][4]}}" placeholder="Category" required></td>
+                            </tr>
+                            <tr>
+                                <td>Sub Category:</td>
+                                <input type="hidden" value="{{data[0][8]}}" name="sub_cat_id">
+                                <td><input type="text" name="subcategory" value="{{data[0][5]}}" placeholder="Sub Category" required></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <button class="btn btn-lg btn-primary btn-block" type="submit">Update</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </fieldset>
+            </div>
+        </body>
+    {% else %}
+        <head>
+            <title>Add Details</title>
+        </head>
+        <body>
+            <div class="container">
+                <fieldset>
+                    <legend>Add Details</legend>
+                    <form method="POST" action="/saveDetails">
+                        <table align="center">
+                            <tr>
+                                <td>Location:</td>
+                                <td><input type="text" name="location" placeholder="Location" autofocus required></td>
+                            </tr>
+                            <tr>
+                                <td>Department:</td>
+                                <td><input type="text" name="department" placeholder="Department" required></td>
+                            </tr>
+                            <tr>
+                                <td>Category:</td>
+                                <td><input type="text" name="category" placeholder="Category" required></td>
+                            </tr>
+                            <tr>
+                                <td>Sub Category:</td>
+                                <td><input type="text" name="subcategory" placeholder="Sub Category" required></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <button class="btn btn-lg btn-primary btn-block" type="submit">Save</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </fieldset>
+            </div>
+        </body>
+    {% endif %}
+</html>

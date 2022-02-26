@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Location Details</title>
+    </head>
+    <body>
+        <div class="container">
+            <fieldset>
+                <legend>Location Details</legend>
+                <form method="POST" action="/searchDetails">
+                    <table align="center">
+                        <tr>
+                            <td>Location:</td>
+                            <td><input type="text" name="location" placeholder="Location" autofocus></td>
+                        </tr>
+                        <tr>
+                            <td>Department:</td>
+                            <td><input type="text" name="department" placeholder="Department"></td>
+                        </tr>
+                        <tr>
+                            <td>Category:</td>
+                            <td><input type="text" name="category" placeholder="Category"></td>
+                        </tr>
+                        <tr>
+                            <td>Sub Category:</td>
+                            <td><input type="text" name="subcategory" placeholder="Sub Category"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <button class="btn btn-lg btn-primary btn-block" type="submit" value="submit">Search</button>
+                                <a href="/addDetails"><button class="btn btn-lg btn-primary btn-block" type="button" value="submit">Add</button></a>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </fieldset>
+        </div>
+        {% if data %}
+        <fieldset>
+            <legend>Search Results</legend>
+            <table class="table table-striped margin-bottom-0px" border="1" width="100%">
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Location name</th>
+                        <th>Department</th>
+                        <th>Category</th>
+                        <th>Sub Category</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for each in data %}
+                    <tr>
+                        <td>{{each[1]}}</td>
+                        <td>{{each[2]}}</td>
+                        <td>{{each[3]}}</td>
+                        <td>{{each[4]}}</td>
+                        <td>{{each[5]}}</td>
+                        <td><a href="/deleteRecords/{{each[0]}}">Delete</a> &nbsp;<a href="/fetchUpdateRecords/{{each[0]}}">Update</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </fieldset>
+        {% endif %}
+    </body>
+</html>
