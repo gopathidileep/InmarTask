@@ -1,6 +1,6 @@
  Pre-requisites:
  --------------
-  - SQlite database should be installed
+  - SQLite database should be installed
   - Flask & SQLAlchemy dependant packages should be installed
 
 **Overview:**
