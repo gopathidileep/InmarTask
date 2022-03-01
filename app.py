@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, json
+from flask import Flask, render_template, request, redirect, json, jsonify
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
@@ -168,7 +168,7 @@ def updateDetails():
     return redirect('/searchDetails')
 
 # API calling functions start here
-
+# curl GET "http://127.0.0.1:5000/api/v1/location/12/department/11/category/11/subcategory/11"
 @app.route('/api/v1/location', methods=['GET'])
 def getAllLocations():
     """
@@ -278,8 +278,30 @@ def getAllSubCategoryDetailsWithCategoryId(loc_id=0, depart_id=0, catg_id=0, sub
                        'sub_cat_id': each[6], 'sub_cat_desc': each[7]})
     return json.dumps(payload)
 
+@app.route('/api/v1/location/<loc_desc>/department/<depart_name>/category/<catg_desc>/subcategory/<sub_cat_desc>',
+            methods=['GET'])
+def getAllDetailsWithDescriptions(loc_desc=None, depart_name=None, catg_desc=None, sub_cat_desc=None):
+    """
+    GET api to fetch all the data based on input
+    parameters
+    """
+    payload = []
+    query_obj = _get_all_sub_categories()
+    query_obj = (query_obj.add_columns(Sku.sku_id, Sku.name)
+                         .filter(and_(Location.location_desc == loc_desc,
+                                     Department.department_name == depart_name,
+                                     Category.category_desc == catg_desc,
+                                     Subcategory.sub_category_desc == sub_cat_desc)))
+    for each in query_obj.all():
+        payload.append({'location_id': each[2], 'location_desc': each[3], \
+                       'department_id': each[0], 'department_name': each[1], \
+                       'category_id': each[4], 'category_desc': each[5],
+                       'sub_cat_id': each[6], 'sub_cat_desc': each[7],
+                       'sku': each[8], 'name': each[9]})
+    return json.dumps(payload)
+
 # DELETE API starts here
-@app.route('/api/v2/location/<int:loc_id>', methods=['DELETE'])
+@app.route('/api/v1/location/<int:loc_id>', methods=['DELETE'])
 def deleteLocationAt(loc_id=0):
     """
     Deletes the data from DB based on the given location id
@@ -290,6 +312,8 @@ def deleteLocationAt(loc_id=0):
     loc_obj.delete(synchronize_session=False)
     session.commit()
     return json.dumps({"Msg": "Record has been deleted successfully"})
+
+# curl -i -H "Content-Type: application/json" -X DELETE http://localhost:5000/api/v2/location/11
 
 # POST API starts here
 @app.route('/api/v3/location', methods=['POST'])
@@ -304,12 +328,13 @@ def insertLocation():
     session.add(loc_obj)
     session.commit()
     query_obj = session.query(Location).filter(Location.location_id == loc_obj.location_id)
-    sample_data = {}
+    sample_data = []
     for each in query_obj.all():
-        sample_data['location_id'] = each[0]
-        sample_data['location_desc'] = each[1]
+        sample_data.append({'location_id': each.location_id, 'location_desc': each.location_desc})
     app.logger.info("Data has been inserted successfully")
-    return jsonify(sample_data)
+    return json.dumps(sample_data)
+
+# curl -i -H "Content-Type: application/json" -X POST -d '{"location_desc":"Hyderabad"}' http://localhost:5000/api/v3/location
 
 # PUT API starts here
 
@@ -325,17 +350,13 @@ def updateLocation():
     session.query(Location).filter(Location.location_id == location_id).update({'location_desc': location_desc})
     session.commit()
     query_obj = session.query(Location).filter(Location.location_id == location_id)
-    sample_data = {}
+    sample_data = []
     for each in query_obj.all():
-        sample_data['location_id'] = each[0]
-        sample_data['location_desc'] = each[1]
+        sample_data.append({'location_id': each.location_id, 'location_desc': each.location_desc})
     app.logger.info("Data has been updated successfully")
-    return jsonify(sample_data)
+    return json.dumps(sample_data)
+
+# curl -i -H "Content-Type: application/json" -X PUT -d '{"location_id":10, "location_desc":"Bangalore"}' http://localhost:5000/api/v4/location
 
 if __name__ == "__main__":
     app.run()
-
-
-
-
-# curl GET "http://127.0.0.1:5000/api/v1/location/12/department/11/category/11/subcategory/11"
